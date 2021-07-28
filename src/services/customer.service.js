@@ -1,11 +1,12 @@
+const Contract = require("../models/Contract")
 const Customer = require("../models/Customer")
 
 /**
  * Get Customer by MAX_Limit
  * @returns Promise
  */
- function getCustomers() {
-    return Customer.find({ }).limit(10).sort('createdAt').exec()
+function getCustomers() {
+    return Customer.find({}).limit(10).sort('createdAt').exec()
 }
 /**
  * Remove Customer after sent to client
@@ -31,10 +32,15 @@ function updateCustomer(body, status) {
     return Customer.updateOne({ CustomerId: body.id }, { status }, { upsert: false })
 }
 
+function getCustomerContract(id) {
+    return Contract.find({ customerId: id }).exec()
+}
+
 
 module.exports = {
     getCustomers,
     deleteCustomer,
     updateCustomer,
-    saveCustomer
+    saveCustomer,
+    getCustomerContract
 }

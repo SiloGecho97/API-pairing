@@ -26,11 +26,20 @@ function create(req, res, next) {
         });
 }
 
+
+function getCustomerContract(req, res, next) {
+    costumerContractHandler(req.params.id)
+}
+
+async function costumerContractHandler(id) {
+    const contract = await getCustomerContract(id)
+    return contract;
+}
 async function createHandler(body) {
-   
+
     let customer = Customer({
-      fullName:body.fullName,
-      address:body.address
+        fullName: body.fullName,
+        address: body.address
     });
 
     await customer.save()
@@ -43,4 +52,4 @@ async function createHandler(body) {
 
 
 
-module.exports = { create  }
+module.exports = { create, getCustomerContract }
