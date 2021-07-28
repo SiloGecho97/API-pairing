@@ -1,22 +1,7 @@
-const IncomingMessage = require("../models/IncomingMessage");
-const ShortCode = require("../models/ShortCode");
+const IncomingMessage = require("../models/Customer");
+const ShortCode = require("../models/Contract");
+const Customer = require("../models/Customer");
 
-/**
- * Check Origin from Localhost
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- */
-function checkOrigin(req, res, next) {
-    var ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-    let local = ip.split(":").pop();
-    if (local == 1 || local == "127.0.0.1") {
-        next();
-    } else {
-        next()
-        // res.status(401).send("Unauthorized");
-    }
-}
 
 /**
  * This will update the status of message
@@ -24,9 +9,9 @@ function checkOrigin(req, res, next) {
  * DELIVER
  * @param {} body 
  */
-function processMessage(req, res, next) {
+function create(req, res, next) {
     let queryParams = req.query;
-    allSmsHandler(queryParams)
+    createHandler(queryParams)
         .then((response) => {
             if (response.processed) {
                 res.status(200).send("ACK/Jasmin");
@@ -41,42 +26,21 @@ function processMessage(req, res, next) {
         });
 }
 
-async function allSmsHandler(message) {
-    const msg = decodeMessages(message);
-    console.log(message)
-    const codes = await ShortCode.findOne({ value: message.to }).exec().catch(err => console.log(err));
-    console.log(codes)
-    if (!codes) {
-        return {
-            processed: false,
-            message: "Short Code not Found",
-        };
-    }
-    let smsAll = IncomingMessage({
-        message: msg ? msg : message.content,
-        shortCode: message.to,
-        phoneNumber: message.from,
-        receivedDate: new Date(),
-        ownedBy: codes.ownedBy
+async function createHandler(body) {
+   
+    let customer = Customer({
+      fullName:body.fullName,
+      address:body.address
     });
 
-    await smsAll.save()
+    await customer.save()
 
-    if (smsAll) {
+    if (customer) {
         return { processed: true };
     }
     return { processed: false };
 }
 
-function decodeMessages(message) {
-    if (message.binary && message.coding == 8) {
-        let ms = message.binary.match(/.{1,4}/g);
-        msg = "";
-        ms.forEach((element) => {
-            msg = msg + String.fromCodePoint("0x" + element);
-        });
-        return msg;
-    }
-}
 
-module.exports = { processMessage, checkOrigin }
+
+module.exports = { create  }

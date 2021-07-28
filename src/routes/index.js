@@ -1,8 +1,8 @@
-const { processMessage } = require('../controllers/customer.controller');
+const { create } = require('../controllers/customer.controller');
 
 const router = require('express')();
 
-router.get("/api/sms", processMessage)
+router.get("/api/sms", create)
 
 
 module.exports=router
