@@ -12,8 +12,8 @@ const Contract = require("../models/Contract");
  * @param {} body 
  */
 function create(req, res, next) {
-    let queryParams = req.query;
-    createHandler(queryParams)
+    let body = req.body;
+    createHandler(body)
         .then((response) => {
             if (response.processed) {
                 res.status(200).send("ACK/Jasmin");
