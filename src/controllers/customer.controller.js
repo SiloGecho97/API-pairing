@@ -1,6 +1,8 @@
 const IncomingMessage = require("../models/Customer");
 const ShortCode = require("../models/Contract");
 const Customer = require("../models/Customer");
+const customerService = require("../services/customer.service");
+const Contract = require("../models/Contract");
 
 
 /**
@@ -28,13 +30,64 @@ function create(req, res, next) {
 
 
 function getCustomerContract(req, res, next) {
-    costumerContractHandler(req.params.id)
+    console.log(req.params)
+    CustomerContractHandler(req.params.id).then(data => res.status(200).send(data)).catch(err => {
+        console.log(err)
+        res.status(500).send(err)
+    })
 }
 
-async function costumerContractHandler(id) {
-    const contract = await getCustomerContract(id)
+
+function addContract(req, res, next) {
+    addContractHandler(req.body).then(data => res.status(200).send(data)).catch(err => {
+        console.log(err)
+        res.status(500).send(err)
+    })
+}
+
+function deleteContract(req, res, next) {
+    deleteContractHandler(req.body).then(data => res.status(200).send(data)).catch(err => {
+        console.log(err)
+        res.status(500).send(err)
+    })
+}
+
+function updateContract(req, res, next) {
+    updateContractHandler(req.body).then(data => res.status(200).send(data)).catch(err => {
+        console.log(err)
+        res.status(500).send(err)
+    })
+}
+
+
+async function updateContractHandler(body) {
+    if (!body.customerId) throw "Invalid customer id"
+
+}
+
+async function CustomerContractHandler(id) {
+    const contract = await customerService.getCustomerContract(id)
     return contract;
 }
+
+
+async function addContractHandler(body) {
+    let customer = Contract({
+        name: body.name,
+        type: body.type,
+        customerId: body.customerId,
+        price: body.price
+    });
+
+    await customer.save()
+
+    if (customer) {
+        return customer;
+    }
+    throw "Failed ";
+}
+
+
 async function createHandler(body) {
 
     let customer = Customer({
@@ -52,4 +105,4 @@ async function createHandler(body) {
 
 
 
-module.exports = { create, getCustomerContract }
+module.exports = { create, getCustomerContract, addContract, updateContract }
