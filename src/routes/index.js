@@ -8,5 +8,5 @@ router.post('/api/contract', addContract)
 router.put('/api/contract', updateContract)
 
 
-router.post('/api/user', createUser)
+// router.post('/api/user', createUser)
 module.exports = router
