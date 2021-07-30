@@ -3,23 +3,20 @@ const express = require('express')
 const helmet = require('helmet');
 const morgan = require('morgan')
 const { graphqlHTTP } = require('express-graphql');
-const { GraphQLSchema, GraphQLObjectType, GraphQLString } = require("graphql")
 const cors = require('cors')
 const connectMongose = require('./db_connection');
-const routes = require('./src/routes')
+const routes = require('./src/routes');
+const Contract = require("./src/models/Contract");
+const { rootQuery, Mutations } = require("./src/graphql");
+const { GraphQLSchema } = require("graphql");
 const app = express();
 const PORT = process.env.PORT || 8585
 
+
 const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-        name: "HelloWorld",
-        fields: () => ({
-            message: { type: GraphQLString, resolve: () => "hello world" },
-
-        })
-    })
+    query: rootQuery,
+    mutation: Mutations
 })
-
 /**
  * Express middlerware to halder json data
  * Morgan for logging
