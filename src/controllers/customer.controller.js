@@ -15,12 +15,7 @@ function create(req, res, next) {
     let body = req.body;
     createHandler(body)
         .then((response) => {
-            if (response.processed) {
-                res.status(200).send("ACK/Jasmin");
-                // next();
-            } else {
-                res.status(400).send("ACK/Jasmin");
-            }
+            res.status(400).send(data);
         })
         .catch((err) => {
             console.log(err)
@@ -30,7 +25,6 @@ function create(req, res, next) {
 
 
 function getCustomerContract(req, res, next) {
-    console.log(req.params)
     CustomerContractHandler(req.params.id).then(data => res.status(200).send(data)).catch(err => {
         console.log(err)
         res.status(500).send(err)
@@ -45,12 +39,6 @@ function addContract(req, res, next) {
     })
 }
 
-function deleteContract(req, res, next) {
-    deleteContractHandler(req.body).then(data => res.status(200).send(data)).catch(err => {
-        console.log(err)
-        res.status(500).send(err)
-    })
-}
 
 function updateContract(req, res, next) {
     updateContractHandler(req.body).then(data => res.status(200).send(data)).catch(err => {

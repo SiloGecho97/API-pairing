@@ -22,16 +22,25 @@ function deleteCustomer(_id) {
  * @returns 
  */
 function saveCustomer(body, CustomerId) {
-    const sentCustomer = new Customer({ phoneNumber: body.phoneNumber, Customer: body.Customer, shortCode: body.shortCode, ownerId: body.ownerId, CustomerId: CustomerId })
-    return sentCustomer.save().catch(err => console.log(err))
+    const customer = new Customer({ phoneNumber: body.phoneNumber, Customer: body.Customer, shortCode: body.shortCode, ownerId: body.ownerId, CustomerId: CustomerId })
+    return customer.save().catch(err => console.log(err))
 }
 
 
-
+/**
+ * Update Costumer 
+ * @param {*} body 
+ * @param {*} status 
+ * @returns 
+ */
 function updateCustomer(body, status) {
     return Customer.updateOne({ CustomerId: body.id }, { status }, { upsert: false })
 }
-
+/**
+ * Get CustomerID
+ * @param {*} id 
+ * @returns 
+ */
 function getCustomerContract(id) {
     return Contract.find({ customerId: id }).exec()
 }
