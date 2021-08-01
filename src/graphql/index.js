@@ -1,5 +1,6 @@
 const { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLInt, GraphQLNonNull, GraphQLID } = require("graphql")
 const Contract = require("../models/Contract")
+const Customer = require("../models/Customer")
 
 const authors = [
     { id: 1, name: "silas", },
@@ -11,6 +12,12 @@ const books = [
     { id: 1, name: "Rich dada", authorId: 1 },
     { id: 2, name: "kena", authorId: 1 },
     { id: 3, name: "abush", authorId: 1 }
+]
+
+const cars = [
+    { id: 1, make: "Rich dada", model: '123js',year:'1231' },
+    { id: 2, make: "kena", model: 'O12', year:"1929" },
+    { id: 3, make: "abush", model:"io123", year:'2002'}
 ]
 const AuthorType = new GraphQLObjectType({
     name: "Author",
@@ -46,6 +53,25 @@ const booktype = new GraphQLObjectType({
         }
     })
 })
+const carType = new GraphQLObjectType({
+    name: "Car",
+    description: "about the car",
+    fields: () => ({
+        id: {
+            type: GraphQLNonNull(GraphQLInt)
+        },
+        make: {
+            type: GraphQLNonNull(GraphQLString)
+        },
+        model: {
+            type: GraphQLNonNull(GraphQLString)
+        },
+        year: {
+            type: GraphQLNonNull(GraphQLString)
+        },
+       
+    })
+})
 const ContractType = new GraphQLObjectType({
     name: "ContractType",
     fields: () => ({
@@ -55,6 +81,17 @@ const ContractType = new GraphQLObjectType({
         price: { type: GraphQLString },
         customerId: { type: GraphQLString },
         status: { type: GraphQLString },
+    })
+
+})
+const CustomerType = new GraphQLObjectType({
+    name: "CustomerType",
+    fields: () => ({
+        id: { type: GraphQLString},
+        fullName: { type: GraphQLString },
+        phoneNumber: { type: GraphQLString },
+        address: { type: GraphQLString },
+       
     })
 
 })
@@ -76,6 +113,17 @@ const rootQuery = new GraphQLObjectType({
         status: {
             type: GraphQLString,
             resolve: () => "welcome to graphql"
+        },
+        allCars:{
+            type: new GraphQLList(carType),
+            description:"Cars List",
+            resolve:() => cars
+        },
+        allCustomer: {
+            type: GraphQLList(CustomerType),
+            resolve: () => {
+                return Customer.find()
+            }
         },
         contract: {
             type: GraphQLList(ContractType),
@@ -120,6 +168,22 @@ const Mutations = new GraphQLObjectType({
                     customerId: args.customerId
                 })
                 return contract.save();
+            }
+        },
+        addCustomer: {
+            type: CustomerType,
+            args: {
+                fullName: { type: new GraphQLNonNull(GraphQLString) },
+                phoneNumber: { type: new GraphQLNonNull(GraphQLString) },
+                address: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            resolve(parent, args) {
+                let cons = new Customer({
+                    fullName: args.fullName,
+                    phoneNumber: args.phoneNumber,
+                    address: args.address,
+                })
+                return cons.save();
             }
         },
         updateContract: {

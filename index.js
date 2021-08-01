@@ -23,6 +23,8 @@ const schema = new GraphQLSchema({
  * Helmet for security
  * 
  */
+app.use(cors())
+
 app.use('/graphql', graphqlHTTP({
     schema: schema,
     graphiql: true,
@@ -32,7 +34,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(helmet())
 app.use(morgan('tiny'))
-app.use(cors())
 /**
  * DB connection,MONGO DB,CONNECTION POOL
  */

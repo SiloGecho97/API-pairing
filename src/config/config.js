@@ -11,6 +11,7 @@ const MONGO_OPTOINS = {
 /**
  * Mongoo db connection setting
  */
+console.log(process.env.MONGO_URL)
 const MONGO = {
     url: process.env.MONGO_URL || 'mongodb://192.168.0.10/ivr',
     options: MONGO_OPTOINS
